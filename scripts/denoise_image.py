@@ -17,7 +17,7 @@ def _build_arg_parser():
     p.add_argument('in_image',
                    help='Input image.')
     p.add_argument('denoise_method', type=int, default=0,
-                   help='denoise algorithm (0: non-local means, 1: gaussian, 2: anisotrope, 3: median, 4: bilateral).')
+                   help='denoise algorithm (0: non-local means, 1: gaussian, 2: anisotrope, 3: median, 4: bilateral, 5: bm3d).')
     p.add_argument('--axe', type=int, default=0,
                    help='Axis to display image after denoising (Sagittal 0, Coronal 1, Axial 2)')
     p.add_argument('--sigma', type=float, default=1,
@@ -71,6 +71,13 @@ def main():
         elif denoise_method == 4: # bilateral
             denoised_image = tools.denoise.denoise_bilateral(data, patch_size, sigma_color, sigma_spatial)
             tools.display.display_image(denoised_image, voxel_sizes, axe)
+        elif denoise_method == 5: # bm3d
+            denoised_image = tools.denoise.denoise_bm3d(data,sigma)
+            tools.display.display_image(denoised_image, voxel_sizes, axe)
+        elif denoise_method == 6: # annisotropic diffusion
+            denoised_image = tools.denoise.denoise_anisotropic_diffusion(data, niter=10, kappa=50, gamma=0.1)
+            tools.display.display_image(denoised_image, voxel_sizes, axe)
+
         
 
 

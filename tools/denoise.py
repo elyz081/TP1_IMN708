@@ -2,9 +2,20 @@ import nibabel as nib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import Slider
-import tools.io
 from scipy.ndimage import gaussian_filter, median_filter
 from skimage import restoration
+from bm3d import bm3d
+from skimage import img_as_float
+from medpy.filter.smoothing import anisotropic_diffusion
+
+def denoise_bm3d(data, sigma):
+    data_float = img_as_float(data)  # BM3D works better on float images
+    denoised_data = bm3d(data_float, sigma_psd=sigma)
+    return denoised_data
+
+def denoise_anisotropic_diffusion(data, niter, kappa, gamma):
+    denoised_image = anisotropic_diffusion(data, niter, kappa, gamma)
+    return denoised_image
 
 def denoise_median(data, patch_size):
     denoised_image = median_filter(data, size=patch_size)
@@ -17,6 +28,8 @@ def denoise_gaussian(data, sigma):
 def denoise_non_local_means(data, h, patch_size, patch_distance):
     denoised_image = restoration.denoise_nl_means(data, h=h, patch_size=patch_size, patch_distance=patch_distance, fast_mode=True)
     return denoised_image
+
+
 
 def denoise_bilateral(data, patch_size, sigma_color, sigma_spatial):
     # Initialize list to store denoised images for each axis

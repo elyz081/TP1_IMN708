@@ -1,6 +1,7 @@
 dipy
 imageio
 matplotlib
+medpy
 nibabel
 numpy
 pydicom
