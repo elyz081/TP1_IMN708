@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.widgets import Slider
 from tools import math, io
-
+import plotly.io as pio
+import plotly.graph_objs as go
 
 """
     --------------------------------------------------------------------------------------
@@ -83,6 +84,51 @@ def display_joint_hist(data1, data2, bins) :
     plt.tight_layout()
 
     plt.show()
+
+
+def display_grids(grids):
+    """
+    Visualizes multiple 3D grids with distinct colors for each grid.
+    
+    Args:
+        grids: List of 2D numpy arrays, where each array is of shape N*3 representing the points in the grid.
+    """
+    fig = go.Figure()
+
+    # Define a list of colors for different grids (can be extended if more grids)
+    colors = ['black', 'red', 'green', 'blue']
+    
+    for idx, grid_points in enumerate(grids):
+        # Extract x, y, z coordinates from the grid
+        x = grid_points[:, 0]
+        y = grid_points[:, 1]
+        z = grid_points[:, 2] if grid_points.ndim == 3 else np.zeros(grid_points.shape[0])
+        
+        # Create a scatter plot for each grid, with a distinct color
+        fig.add_trace(go.Scatter3d(
+            x=x, y=y, z=z,
+            mode='markers',
+            marker=dict(
+                size=5,  # Size of the points
+                color=colors[idx % len(colors)],  # Cycle through colors for each grid
+                opacity=0.8,
+            ),
+            name=f'Grid {idx+1}'
+        ))
+
+    # Set axis labels and layout
+    fig.update_layout(
+        scene=dict(
+            xaxis=dict(title='X-axis'),
+            yaxis=dict(title='Y-axis'),
+            zaxis=dict(title='Z-axis'),
+        ),
+        title="3D Grid Visualization",
+        showlegend=True
+    )
+
+    # Show the figure
+    pio.show(fig)    
 
 """
     --------------------------------------------------------------------------------------
