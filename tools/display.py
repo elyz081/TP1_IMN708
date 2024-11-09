@@ -13,7 +13,7 @@ import plotly.graph_objects as go
     --------------------------------------------------------------------------------------
     --------------------------------------------------------------------------------------
 """
-def display_joint_hist(data1, data2, bins):
+def display_joint_hist(joint_hist,bin_centers_1,bin_centers_2, data1, data2, bins, ssd, ssd_jh, cr, im):
     """
     Display a joint histogram and intensity histograms for two input image data, along with similarity metrics.
 
@@ -41,11 +41,7 @@ def display_joint_hist(data1, data2, bins):
     None
     """
 
-    # Assuming io.data_to_bins and math.joint_histogram are defined functions in the same module
-    data_bins_1, bin_centers_1 = io.data_to_bins(data1, bins)
-    data_bins_2, bin_centers_2 = io.data_to_bins(data2, bins)
 
-    joint_hist = math.joint_histogram(data_bins_1, data_bins_2)
     joint_hist_log = np.log1p(joint_hist)
 
     fig = make_subplots(
@@ -84,14 +80,10 @@ def display_joint_hist(data1, data2, bins):
     # Calculate and display statistics
     stats_text = ""
     stats_text += f"bin number: {bins} <br>"
-    ssd = math.ssd(data1,data2)
     stats_text += f"SSD: {ssd:.3f} <br>"
-    ssd_jh = math.ssd_joint_hist(joint_hist, bin_centers_1, bin_centers_2)
-    stats_text += f"<br> USING JOINT HIST: <br> <br>"
+    stats_text += f"<br>USING NORMALIZED<br>JOINT HISTOGRAM: <br>"
     stats_text += f"SSD: {ssd_jh:.3f} <br>"
-    cr = math.cr(joint_hist)
     stats_text += f"cr: {cr:.3f} <br>"
-    im = math.IM(joint_hist)
     stats_text += f"IM: {im:.3f}"
 
 
@@ -115,7 +107,7 @@ def display_joint_hist(data1, data2, bins):
 
     fig.show()
 
-def plt_display_joint_hist(data1, data2, bins) :
+def plt_display_joint_hist(joint_hist,data1, data2, bins, ssd, ssd_jh, cr, im):
     """
     Display a joint histogram and intensity histograms for two input image datas, along with similarity metrics.
 
@@ -145,13 +137,6 @@ def plt_display_joint_hist(data1, data2, bins) :
     None
     """
 
-
-    data_bins_1, bin_centers_1 = io.data_to_bins(data1, bins)
-    data_bins_2, bin_centers_2 = io.data_to_bins(data2, bins)
-
-    joint_hist = math.joint_histogram(data_bins_1, data_bins_2)
-
-
     fig, axs = plt.subplots(2, 2, figsize=(10,10), gridspec_kw={'width_ratios': [1, 4], 'height_ratios': [4, 1]})
 
     axs[1, 1].hist(data2.flatten(), bins=bins, color='black', alpha=0.7)
@@ -173,15 +158,13 @@ def plt_display_joint_hist(data1, data2, bins) :
     axs[1, 0].axis('off')
     stats_text = ""
     stats_text += f"bin number: {bins}\n"
-    ssd = math.ssd(data1,data2)
     stats_text += f"SSD: {ssd:.3f}\n"
-    ssd_jh = math.ssd_joint_hist(joint_hist, bin_centers_1, bin_centers_2)
     stats_text += f"(joint hist) SSD: {ssd_jh:.3f}\n"
-    cr = math.cr(joint_hist)
     stats_text += f"(joint hist) cr: {cr:.3f}\n"
-    im = math.IM(joint_hist)
     stats_text += f"(joint hist) IM: {im:.3f}\n"
     axs[1, 0].set_title(stats_text, bbox=dict(facecolor='black', alpha=0.5 ))
+
+
 
     plt.tight_layout()
 

@@ -36,7 +36,7 @@ def joint_histogram(data1, data2):
 
 
 
-def ssd_joint_hist(joint_hist, bin_centers_1, bin_centers_2):
+def normalized_ssd(joint_hist, bin_centers_1, bin_centers_2):
     """
     Calculate the Sum of Squared Differences (SSD) between two images based on the joint histogram.
     
@@ -53,6 +53,8 @@ def ssd_joint_hist(joint_hist, bin_centers_1, bin_centers_2):
     j_vals = bin_centers_2[np.newaxis, :]
     # Compute the squared difference (i - j)^2 using broadcasting
     squared_diff = (i_vals - j_vals) ** 2 
+    # Normalize joint histogram
+    joint_hist = joint_hist/ np.sum(joint_hist)
     ssd_value = np.sum(joint_hist * squared_diff)
     
     return ssd_value
